@@ -27,7 +27,7 @@ interface MessageHeader {
 
 class PrivateKey {
   // Recommended, but not implemented in browsers
-  // const ALGORITHM = { name: "X25519"} ;
+  // static ALGORITHM = { name: "X25519"} ;
 
   static ALGORITHM = { name: "ECDH", namedCurve: "P-256" };
 
@@ -57,7 +57,7 @@ class PrivateKey {
 
 class SigningKey {
   // Recommended, but not implemented in browsers
-  // const ALGORITHM = { name: "Ed25519" };
+  // static ALGORITHM = { name: "Ed25519" };
 
   static ALGORITHM = { name: "ECDSA", namedCurve: "P-256", hash: "SHA-256" };
 
@@ -304,27 +304,29 @@ class Server {
   }
 }
 
-if (import.meta.main) {
-  const server = new Server();
-  const alice = new Person();
-  const bob = new Person();
+if (typeof window === "undefined") {
+  (async function () {
+    const server = new Server();
+    const alice = new Person();
+    const bob = new Person();
 
-  await alice.initKeys();
-  await bob.initKeys();
+    await alice.initKeys();
+    await bob.initKeys();
 
-  server.upload(bob.prekeyBundle());
-  const prekeyBundle = server.download();
+    server.upload(bob.prekeyBundle());
+    const prekeyBundle = server.download();
 
-  const x3dhData: X3DHData = await alice.initX3DHInitiator(prekeyBundle);
-  await bob.initX3DHResponder(x3dhData);
+    const x3dhData: X3DHData = await alice.initX3DHInitiator(prekeyBundle);
+    await bob.initX3DHResponder(x3dhData);
 
-  const a1 = await alice.sendMessage("a1");
-  console.log(await bob.receiveMessage(...a1));
-  const b1 = await bob.sendMessage("b1");
-  console.log(await bob.receiveMessage(...b1));
+    const a1 = await alice.sendMessage("a1");
+    console.log(await bob.receiveMessage(...a1));
+    const b1 = await bob.sendMessage("b1");
+    console.log(await bob.receiveMessage(...b1));
 
-  const a2 = await alice.sendMessage("a2");
-  console.log(await bob.receiveMessage(...a2));
-  const b2 = await bob.sendMessage("b2");
-  console.log(await bob.receiveMessage(...b2));
+    const a2 = await alice.sendMessage("a2");
+    console.log(await bob.receiveMessage(...a2));
+    const b2 = await bob.sendMessage("b2");
+    console.log(await bob.receiveMessage(...b2));
+  })();
 }

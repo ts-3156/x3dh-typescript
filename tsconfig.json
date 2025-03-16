@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "target": "es2022",
-    "module": "esnext",
-    "lib": ["es2022", "DOM"]
+    "target": "es2017",
+    "strict": true
   }
 }
