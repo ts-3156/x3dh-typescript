@@ -304,29 +304,34 @@ class Server {
   }
 }
 
+async function main() {
+  const server = new Server();
+  const alice = new Person();
+  const bob = new Person();
+
+  await alice.initKeys();
+  await bob.initKeys();
+
+  server.upload(bob.prekeyBundle());
+  const prekeyBundle = server.download();
+
+  const x3dhData: X3DHData = await alice.initX3DHInitiator(prekeyBundle);
+  await bob.initX3DHResponder(x3dhData);
+
+  const a1 = await alice.sendMessage("a1");
+  console.log(await bob.receiveMessage(...a1));
+  const b1 = await bob.sendMessage("b1");
+  console.log(await bob.receiveMessage(...b1));
+
+  const a2 = await alice.sendMessage("a2");
+  console.log(await bob.receiveMessage(...a2));
+  const b2 = await bob.sendMessage("b2");
+  console.log(await bob.receiveMessage(...b2));
+}
+
 if (typeof window === "undefined") {
+  // Run it in Deno.
   (async function () {
-    const server = new Server();
-    const alice = new Person();
-    const bob = new Person();
-
-    await alice.initKeys();
-    await bob.initKeys();
-
-    server.upload(bob.prekeyBundle());
-    const prekeyBundle = server.download();
-
-    const x3dhData: X3DHData = await alice.initX3DHInitiator(prekeyBundle);
-    await bob.initX3DHResponder(x3dhData);
-
-    const a1 = await alice.sendMessage("a1");
-    console.log(await bob.receiveMessage(...a1));
-    const b1 = await bob.sendMessage("b1");
-    console.log(await bob.receiveMessage(...b1));
-
-    const a2 = await alice.sendMessage("a2");
-    console.log(await bob.receiveMessage(...a2));
-    const b2 = await bob.sendMessage("b2");
-    console.log(await bob.receiveMessage(...b2));
+    await main();
   })();
 }

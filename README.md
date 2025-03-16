@@ -6,7 +6,27 @@ If you want to implement X3DH in your preferred programming language, it is bett
 ## Usage
 
 ```shell
+# If you don't have a deno command (TypeScript Runtime)
+curl -fsSL https://deno.land/install.sh | sh
+
+# In your terminal shell
 deno run x3dh.ts
+```
+
+Or
+
+```shell
+# If you don't have a tsc command (TypeScript Compiler)
+npm init
+npm install typescript
+
+# Compile!
+npx tsc
+```
+
+```javascript
+// Open created x3dh.js and paste all codes in it to your browser's console and run the below.
+main();
 ```
 
 ## Different languages
